@@ -28,3 +28,8 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+
+- Catalog products, categories, filtering and sorting live in `src/lib/catalog.ts` as static sample data; swap that module's data source when a backend is added so pages keep the same API.
+- Catalog filters (search, category, sort) are URL search params on `/` so filtered views are shareable.
