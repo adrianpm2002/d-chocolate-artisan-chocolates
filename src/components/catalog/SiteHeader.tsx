@@ -1,18 +1,19 @@
 import { Link } from "@tanstack/react-router";
 import { ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
+import { BrandLogo } from "./BrandLogo";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8">
-        <Link to="/" className="font-display text-2xl font-semibold text-primary">
-          D'Chocol<span className="text-gold">A</span>te
+    <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:h-[4.5rem] sm:px-8">
+        <Link to="/" aria-label="D'ChocolAte, ir al inicio" className="shrink-0">
+          <BrandLogo />
         </Link>
-        <nav className="flex items-center gap-6 text-sm font-medium">
+        <nav className="flex items-center gap-5 text-sm font-bold">
           <Link
             to="/"
-            className="text-muted-foreground transition-colors hover:text-foreground"
+            className="hidden text-muted-foreground transition-colors hover:text-foreground sm:inline"
             activeProps={{ className: "text-foreground" }}
             activeOptions={{ exact: true, includeSearch: false }}
           >
@@ -22,7 +23,7 @@ export function SiteHeader() {
             type="button"
             aria-label="Carrito"
             onClick={() => toast("El carrito estará disponible en el próximo módulo.")}
-            className="relative grid size-10 place-items-center rounded-full border border-border text-foreground transition-colors hover:bg-secondary"
+            className="grid size-10 place-items-center rounded-full bg-primary text-primary-foreground transition-colors hover:bg-caramel"
           >
             <ShoppingBag className="size-4" />
           </button>
