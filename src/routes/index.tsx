@@ -70,7 +70,7 @@ function CatalogPage() {
   return (
     <>
       <section className="relative isolate overflow-hidden border-b border-border bg-secondary">
-        <div aria-hidden className="paw-pattern absolute inset-0 -z-10 bg-sand opacity-70" />
+        <div aria-hidden className="paw-pattern absolute inset-0 -z-10 bg-sand opacity-50" />
         <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:py-20">
           <div>
             <p className="text-eyebrow flex items-center gap-2 text-caramel animate-rise">

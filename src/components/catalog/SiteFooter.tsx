@@ -4,7 +4,7 @@ import logo from "@/assets/logo-dchocolate.png.asset.json";
 export function SiteFooter() {
   return (
     <footer className="relative isolate mt-24 overflow-hidden border-t border-border bg-secondary">
-      <div aria-hidden className="paw-pattern absolute inset-0 -z-10 bg-sand opacity-60" />
+      <div aria-hidden className="paw-pattern absolute inset-0 -z-10 bg-sand opacity-50" />
       <div className="mx-auto flex max-w-7xl flex-col items-center px-5 py-14 text-center sm:px-8">
         <img
           src={logo.url}
