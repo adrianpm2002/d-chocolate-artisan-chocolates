@@ -32,11 +32,11 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         <p className="text-eyebrow text-muted-foreground">{categoryLabel(product.category)}</p>
         <h3 className="text-xl font-semibold leading-tight text-foreground">{product.name}</h3>
         <p className="line-clamp-2 text-sm text-muted-foreground">{product.short}</p>
-        <div className="mt-auto flex items-end justify-between pt-4">
+        <div className="mt-auto flex items-end justify-between gap-3 pt-4">
           <span className="font-display text-2xl font-semibold text-primary">
             {formatPrice(product.price)}
           </span>
-          <span className="text-xs text-muted-foreground">{product.presentation}</span>
+          <span className="max-w-[45%] text-right text-xs text-muted-foreground">{product.presentation}</span>
         </div>
       </div>
     </Link>
