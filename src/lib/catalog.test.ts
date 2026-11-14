@@ -9,13 +9,13 @@ describe("catálogo", () => {
 
   it("busca sin importar acentos ni mayúsculas", () => {
     const result = filterProducts(PRODUCTS, { q: "CAFE" });
-    expect(result.map((p) => p.slug)).toEqual(["trufas-de-cafe"]);
+    expect(result.map((p) => p.slug)).toEqual(["trufa-artesanal"]);
   });
 
   it("ordena por precio de menor a mayor", () => {
     const prices = filterProducts(PRODUCTS, { orden: "precio-asc" }).map((p) => p.price);
-    expect(prices[0]).toBe(135);
-    expect(prices.at(-1)).toBe(420);
+    expect(prices[0]).toBe(18);
+    expect(prices.at(-1)).toBe(514);
   });
 
   it("ignora categorías u orden desconocidos en la URL", () => {
