@@ -124,8 +124,8 @@ export function slotLayout(container: Container): { aspect: number; slots: SlotP
     for (let i = 0; i < count; i++) {
       const angle = -Math.PI / 2 + (i / count) * Math.PI * 2 + (ring % 2 ? Math.PI / count : 0);
       slots.push({
-        x: 50 + radii[ring] * Math.cos(angle),
-        y: 50 + radii[ring] * Math.sin(angle),
+        x: 50 + (radii[ring] ?? 0) * Math.cos(angle),
+        y: 50 + (radii[ring] ?? 0) * Math.sin(angle),
         size: 14.5,
       });
     }

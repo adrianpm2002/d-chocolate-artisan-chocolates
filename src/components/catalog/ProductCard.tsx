@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Heart } from "lucide-react";
-import { type Product, categoryLabel, formatPrice } from "@/lib/catalog";
+import { type Product, categoryLabel, formatPrice, hasPriceRange, productPrice } from "@/lib/catalog";
 import { ProductTag } from "./ProductTag";
 
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
@@ -38,7 +38,8 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         <p className="line-clamp-2 text-sm text-muted-foreground">{product.short}</p>
         <div className="mt-auto flex items-end justify-between gap-3 pt-4">
           <span className="font-display text-2xl font-bold text-primary">
-            {formatPrice(product.price)}
+            {hasPriceRange(product) ? "Desde " : ""}
+              {formatPrice(productPrice(product))}
           </span>
           <span className="max-w-[45%] text-right text-xs font-semibold text-muted-foreground">
             {product.presentation}

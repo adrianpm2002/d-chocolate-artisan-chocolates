@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { ProductCard } from "@/components/catalog/ProductCard";
 import { ProductTag } from "@/components/catalog/ProductTag";
 import { Button } from "@/components/ui/button";
-import { PRODUCTS, categoryLabel, formatPrice, getProduct } from "@/lib/catalog";
+import { PRODUCTS, categoryLabel, formatPrice, getProduct, hasPriceRange, productPrice } from "@/lib/catalog";
 
 export const Route = createFileRoute("/productos/$slug")({
   loader: ({ params }) => {
@@ -77,7 +77,8 @@ function ProductPage() {
             {product.cacao ? ` · ${product.cacao}% cacao` : ""}
           </p>
           <p className="mt-6 font-display text-4xl font-bold text-primary">
-            {formatPrice(product.price)}
+            {hasPriceRange(product) ? "Desde " : ""}
+            {formatPrice(productPrice(product))}
           </p>
           <p className="mt-6 text-base leading-relaxed text-foreground/80">{product.description}</p>
 
