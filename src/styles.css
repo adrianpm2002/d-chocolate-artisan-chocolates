@@ -8,11 +8,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* D'ChocolAte design system: cacao browns, cream paper, caramel-gold accent, raspberry highlight. */
+/* D'ChocolAte brand: chocolate brown, caramel, cream paper and blush pink, with a puppy mascot. */
 
 @theme inline {
   --font-display: "Fraunces", ui-serif, Georgia, serif;
-  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
+  --font-script: "Caveat", "Segoe Script", cursive;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -41,10 +42,13 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
-  --color-gold: var(--gold);
-  --color-gold-foreground: var(--gold-foreground);
-  --color-raspberry: var(--raspberry);
-  --color-raspberry-foreground: var(--raspberry-foreground);
+  --color-caramel: var(--caramel);
+  --color-caramel-foreground: var(--caramel-foreground);
+  --color-rosa: var(--rosa);
+  --color-rosa-deep: var(--rosa-deep);
+  --color-rosa-foreground: var(--rosa-foreground);
+  --color-blush: var(--blush);
+  --color-sand: var(--sand);
   --color-cacao: var(--cacao);
   --color-cacao-foreground: var(--cacao-foreground);
   --color-chart-1: var(--chart-1);
@@ -65,57 +69,62 @@
 }
 
 :root {
-  --radius: 0.75rem;
-  --background: oklch(0.972 0.014 80);
-  --foreground: oklch(0.24 0.035 45);
-  --card: oklch(0.99 0.008 80);
-  --card-foreground: oklch(0.24 0.035 45);
-  --popover: oklch(0.99 0.008 80);
-  --popover-foreground: oklch(0.24 0.035 45);
-  --primary: oklch(0.3 0.05 42);
-  --primary-foreground: oklch(0.97 0.015 80);
-  --secondary: oklch(0.935 0.024 75);
-  --secondary-foreground: oklch(0.3 0.05 42);
-  --muted: oklch(0.925 0.02 75);
-  --muted-foreground: oklch(0.5 0.035 50);
-  --accent: oklch(0.9 0.04 72);
-  --accent-foreground: oklch(0.28 0.05 42);
+  --radius: 1rem;
+  /* Cream paper #faeddc */
+  --background: oklch(0.952 0.027 74.8);
+  /* Deep chocolate #3b1408 */
+  --foreground: oklch(0.251 0.065 37.6);
+  --card: oklch(0.982 0.014 74.4);
+  --card-foreground: oklch(0.251 0.065 37.6);
+  --popover: oklch(0.982 0.014 74.4);
+  --popover-foreground: oklch(0.251 0.065 37.6);
+  /* Chocolate #471909 */
+  --primary: oklch(0.282 0.075 38.9);
+  --primary-foreground: oklch(0.952 0.027 74.8);
+  --secondary: oklch(0.915 0.038 69.9);
+  --secondary-foreground: oklch(0.282 0.075 38.9);
+  --muted: oklch(0.915 0.038 69.9);
+  --muted-foreground: oklch(0.515 0.072 45.3);
+  --accent: oklch(0.901 0.037 32.4);
+  --accent-foreground: oklch(0.282 0.075 38.9);
   --destructive: oklch(0.55 0.2 25);
   --destructive-foreground: oklch(0.98 0.01 80);
-  --border: oklch(0.88 0.025 70);
-  --input: oklch(0.87 0.025 70);
-  --ring: oklch(0.7 0.11 68);
+  --border: oklch(0.888 0.04 69.7);
+  --input: oklch(0.858 0.052 65.1);
+  --ring: oklch(0.737 0.102 28.8);
 
-  --gold: oklch(0.74 0.12 72);
-  --gold-foreground: oklch(0.24 0.04 45);
-  --raspberry: oklch(0.55 0.16 12);
-  --raspberry-foreground: oklch(0.98 0.01 80);
-  --cacao: oklch(0.2 0.03 40);
-  --cacao-foreground: oklch(0.95 0.02 78);
+  /* Caramel #7a3e22 */
+  --caramel: oklch(0.434 0.093 44.4);
+  --caramel-foreground: oklch(0.952 0.027 74.8);
+  /* Blush pink #e39185 */
+  --rosa: oklch(0.737 0.102 28.8);
+  --rosa-deep: oklch(0.623 0.129 26.1);
+  --rosa-foreground: oklch(0.251 0.065 37.6);
+  --blush: oklch(0.901 0.037 32.4);
+  /* Sand #e9caad */
+  --sand: oklch(0.858 0.052 65.1);
+  --cacao: oklch(0.282 0.075 38.9);
+  --cacao-foreground: oklch(0.952 0.027 74.8);
 
-  --gradient-hero: linear-gradient(
-    90deg,
-    oklch(0.17 0.025 40 / 0.95) 0%,
-    oklch(0.17 0.025 40 / 0.75) 45%,
-    oklch(0.17 0.025 40 / 0) 85%
-  );
-  --gradient-gold: linear-gradient(135deg, oklch(0.8 0.11 80), oklch(0.66 0.12 60));
-  --shadow-card: 0 1px 2px oklch(0.3 0.05 42 / 0.06), 0 8px 24px -12px oklch(0.3 0.05 42 / 0.18);
-  --shadow-lift: 0 2px 4px oklch(0.3 0.05 42 / 0.08), 0 24px 48px -20px oklch(0.3 0.05 42 / 0.35);
+  --shadow-card: 0 1px 2px oklch(0.282 0.075 38.9 / 0.06), 0 10px 28px -14px oklch(0.282 0.075 38.9 / 0.22);
+  --shadow-lift: 0 2px 4px oklch(0.282 0.075 38.9 / 0.08), 0 26px 50px -22px oklch(0.282 0.075 38.9 / 0.4);
 
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.96 0.015 80);
-  --sidebar-foreground: oklch(0.24 0.035 45);
-  --sidebar-primary: oklch(0.3 0.05 42);
-  --sidebar-primary-foreground: oklch(0.97 0.015 80);
-  --sidebar-accent: oklch(0.935 0.024 75);
-  --sidebar-accent-foreground: oklch(0.3 0.05 42);
-  --sidebar-border: oklch(0.88 0.025 70);
-  --sidebar-ring: oklch(0.7 0.11 68);
+  --sidebar: oklch(0.952 0.027 74.8);
+  --sidebar-foreground: oklch(0.251 0.065 37.6);
+  --sidebar-primary: oklch(0.282 0.075 38.9);
+  --sidebar-primary-foreground: oklch(0.952 0.027 74.8);
+  --sidebar-accent: oklch(0.915 0.038 69.9);
+  --sidebar-accent-foreground: oklch(0.282 0.075 38.9);
+  --sidebar-border: oklch(0.888 0.04 69.7);
+  --sidebar-ring: oklch(0.737 0.102 28.8);
+
+  /* Paw-and-heart tile used as a mask, so its colour comes from the element's background token. */
+  --pattern-paws: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cg fill='%23000'%3E%3Cellipse cx='34' cy='44' rx='11' ry='9'/%3E%3Ccircle cx='21' cy='30' r='4.5'/%3E%3Ccircle cx='30' cy='23' r='4.5'/%3E%3Ccircle cx='40' cy='23' r='4.5'/%3E%3Ccircle cx='48' cy='30' r='4.5'/%3E%3Cpath d='M104 118c-12-8-18-14-18-21a8 8 0 0 1 18-4a8 8 0 0 1 18 4c0 7-6 13-18 21z'/%3E%3Cpath d='M106 34c-6-4-9-7-9-10.5a4 4 0 0 1 9-2a4 4 0 0 1 9 2c0 3.5-3 6.5-9 10.5z'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 @layer base {
@@ -135,24 +144,30 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.01em;
+    font-variation-settings: "SOFT" 100, "WONK" 0;
+    letter-spacing: -0.015em;
   }
 }
 
-@utility bg-gradient-hero {
-  background-image: var(--gradient-hero);
-}
-
-@utility bg-gradient-gold {
-  background-image: var(--gradient-gold);
+@utility font-script {
+  font-family: var(--font-script);
+  font-weight: 600;
+  letter-spacing: 0;
 }
 
 @utility text-eyebrow {
   font-family: var(--font-sans);
   font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
+  font-weight: 800;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
+}
+
+@utility paw-pattern {
+  -webkit-mask-image: var(--pattern-paws);
+  mask-image: var(--pattern-paws);
+  -webkit-mask-size: 140px 140px;
+  mask-size: 140px 140px;
 }
 
 @keyframes rise-in {
@@ -168,4 +183,21 @@
 
 @utility animate-rise {
   animation: rise-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes wag {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+@utility animate-wag {
+  animation: wag 3.2s ease-in-out infinite;
+  transform-origin: 50% 90%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-wag,
+  .animate-rise {
+    animation: none;
+  }
 }
