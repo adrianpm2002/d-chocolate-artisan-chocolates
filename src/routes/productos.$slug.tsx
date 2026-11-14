@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Leaf, ShoppingBag } from "lucide-react";
+import { ArrowLeft, Heart, Leaf, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
 import { ProductCard } from "@/components/catalog/ProductCard";
 import { ProductTag } from "@/components/catalog/ProductTag";
@@ -50,7 +50,7 @@ function ProductPage() {
       </Link>
 
       <div className="mt-6 grid gap-10 lg:grid-cols-2 lg:gap-16">
-        <div className="relative overflow-hidden rounded-3xl bg-muted shadow-card animate-rise">
+        <div className="relative overflow-hidden rounded-[2.5rem] border-4 border-card bg-muted shadow-lift animate-rise">
           <img
             src={product.image}
             alt={product.name}
@@ -65,25 +65,25 @@ function ProductPage() {
           <Link
             to="/"
             search={{ categoria: product.category }}
-            className="text-eyebrow text-gold hover:underline"
+            className="text-eyebrow text-caramel hover:underline"
           >
             {categoryLabel(product.category)}
           </Link>
-          <h1 className="mt-3 text-4xl font-semibold leading-tight text-foreground sm:text-5xl">
+          <h1 className="mt-3 text-4xl font-bold leading-tight text-primary sm:text-5xl">
             {product.name}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
             {product.presentation}
             {product.cacao ? ` · ${product.cacao}% cacao` : ""}
           </p>
-          <p className="mt-6 font-display text-4xl font-semibold text-primary">
+          <p className="mt-6 font-display text-4xl font-bold text-primary">
             {formatPrice(product.price)}
           </p>
           <p className="mt-6 text-base leading-relaxed text-foreground/80">{product.description}</p>
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Button
-              variant="gold"
+              variant="brand"
               size="xl"
               disabled={!product.inStock}
               onClick={() => toast("El carrito estará disponible en el próximo módulo.")}
@@ -92,12 +92,12 @@ function ProductPage() {
             </Button>
             {product.inStock && (
               <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="size-2 rounded-full bg-gold" /> Disponible
+                <Heart className="size-4 fill-rosa text-rosa" aria-hidden /> Disponible, hecho con mucho amor
               </span>
             )}
           </div>
 
-          <dl className="mt-10 grid gap-6 border-t border-border pt-8 sm:grid-cols-2">
+          <dl className="mt-10 grid gap-6 rounded-3xl border border-border bg-card p-6 sm:grid-cols-2">
             <div>
               <dt className="text-eyebrow flex items-center gap-2 text-muted-foreground">
                 <Leaf className="size-3.5" /> Ingredientes
@@ -113,7 +113,8 @@ function ProductPage() {
       </div>
 
       <section className="mt-24">
-        <h2 className="text-3xl font-semibold text-foreground">También te puede gustar</h2>
+        <p className="font-script text-2xl text-caramel">Para compartir en buena compañía</p>
+        <h2 className="text-3xl font-bold text-primary">También te puede gustar</h2>
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {related.map((p, i) => (
             <ProductCard key={p.slug} product={p} index={i} />

@@ -33,3 +33,4 @@ use the editor.
 
 - Catalog products, categories, filtering and sorting live in `src/lib/catalog.ts` as static sample data; swap that module's data source when a backend is added so pages keep the same API.
 - Catalog filters (search, category, sort) are URL search params on `/` so filtered views are shareable.
+- Brand logo, wordmark and mascot are asset pointers in `src/assets`; render the header logo through `BrandLogo` so brand changes stay in one place.

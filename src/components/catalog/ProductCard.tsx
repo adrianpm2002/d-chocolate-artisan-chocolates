@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { Heart } from "lucide-react";
 import { type Product, categoryLabel, formatPrice } from "@/lib/catalog";
 import { ProductTag } from "./ProductTag";
 
@@ -7,10 +8,10 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
     <Link
       to="/productos/$slug"
       params={{ slug: product.slug }}
-      className="group flex flex-col overflow-hidden rounded-2xl bg-card shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lift animate-rise"
+      className="group flex flex-col overflow-hidden rounded-3xl border border-border bg-card p-2.5 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lift animate-rise"
       style={{ animationDelay: `${index * 60}ms` }}
     >
-      <div className="relative aspect-square overflow-hidden bg-muted">
+      <div className="relative aspect-square overflow-hidden rounded-2xl bg-muted">
         <img
           src={product.image}
           alt={product.name}
@@ -22,21 +23,26 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         <div className="absolute left-3 top-3 flex gap-2">
           {product.tag && <ProductTag tag={product.tag} />}
           {!product.inStock && (
-            <span className="rounded-full bg-background/90 px-3 py-1 text-xs font-semibold text-muted-foreground">
+            <span className="rounded-full bg-background/90 px-3 py-1 text-xs font-bold text-muted-foreground">
               Agotado
             </span>
           )}
         </div>
+        <span className="absolute right-3 top-3 grid size-9 place-items-center rounded-full bg-background/90 text-rosa-deep opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+          <Heart className="size-4 fill-rosa text-rosa-deep" aria-hidden />
+        </span>
       </div>
-      <div className="flex flex-1 flex-col gap-2 p-5">
-        <p className="text-eyebrow text-muted-foreground">{categoryLabel(product.category)}</p>
+      <div className="flex flex-1 flex-col gap-1.5 px-2.5 pb-2.5 pt-4">
+        <p className="text-eyebrow text-caramel">{categoryLabel(product.category)}</p>
         <h3 className="text-xl font-semibold leading-tight text-foreground">{product.name}</h3>
         <p className="line-clamp-2 text-sm text-muted-foreground">{product.short}</p>
         <div className="mt-auto flex items-end justify-between gap-3 pt-4">
-          <span className="font-display text-2xl font-semibold text-primary">
+          <span className="font-display text-2xl font-bold text-primary">
             {formatPrice(product.price)}
           </span>
-          <span className="max-w-[45%] text-right text-xs text-muted-foreground">{product.presentation}</span>
+          <span className="max-w-[45%] text-right text-xs font-semibold text-muted-foreground">
+            {product.presentation}
+          </span>
         </div>
       </div>
     </Link>
