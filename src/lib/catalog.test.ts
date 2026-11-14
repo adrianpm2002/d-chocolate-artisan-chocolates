@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PRODUCTS, filterProducts, parseCatalogSearch } from "./catalog";
+import { PRODUCTS, filterProducts, parseCatalogSearch, productPrice } from "./catalog";
 
 describe("catálogo", () => {
   it("filtra por categoría", () => {
@@ -13,7 +13,7 @@ describe("catálogo", () => {
   });
 
   it("ordena por precio de menor a mayor", () => {
-    const prices = filterProducts(PRODUCTS, { orden: "precio-asc" }).map((p) => p.price);
+    const prices = filterProducts(PRODUCTS, { orden: "precio-asc" }).map(productPrice);
     expect(prices[0]).toBe(18);
     expect(prices.at(-1)).toBe(514);
   });
