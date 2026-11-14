@@ -199,15 +199,15 @@ const categoryIds = new Set<string>(CATEGORIES.map((c) => c.id));
 const sortIds = new Set<string>(SORT_OPTIONS.map((s) => s.id));
 
 export function parseCatalogSearch(search: Record<string, unknown>): CatalogFilters {
+  const q = search["q"];
+  const categoria = search["categoria"];
+  const orden = search["orden"];
   return {
-    q: typeof search.q === "string" && search.q.trim() ? search.q : undefined,
+    q: typeof q === "string" && q.trim() ? q : undefined,
     categoria:
-      typeof search.categoria === "string" && categoryIds.has(search.categoria)
-        ? (search.categoria as CategoryId)
+      typeof categoria === "string" && categoryIds.has(categoria)
+        ? (categoria as CategoryId)
         : undefined,
-    orden:
-      typeof search.orden === "string" && sortIds.has(search.orden)
-        ? (search.orden as SortId)
-        : undefined,
+    orden: typeof orden === "string" && sortIds.has(orden) ? (orden as SortId) : undefined,
   };
 }
