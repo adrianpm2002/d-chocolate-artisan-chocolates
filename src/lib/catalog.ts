@@ -148,9 +148,9 @@ export const PRODUCTS: Product[] = [
 ];
 
 export type CatalogFilters = {
-  q?: string;
-  categoria?: CategoryId;
-  orden?: SortId;
+  q?: string | undefined;
+  categoria?: CategoryId | undefined;
+  orden?: SortId | undefined;
 };
 
 function normalize(text: string) {
