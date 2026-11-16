@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ArmaTuPackRouteImport } from './routes/arma-tu-pack'
 import { Route as ProductosSlugRouteImport } from './routes/productos.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArmaTuPackRoute = ArmaTuPackRouteImport.update({
+  id: '/arma-tu-pack',
+  path: '/arma-tu-pack',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductosSlugRoute = ProductosSlugRouteImport.update({
@@ -25,27 +31,31 @@ const ProductosSlugRoute = ProductosSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/arma-tu-pack': typeof ArmaTuPackRoute
   '/productos/$slug': typeof ProductosSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/arma-tu-pack': typeof ArmaTuPackRoute
   '/productos/$slug': typeof ProductosSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/arma-tu-pack': typeof ArmaTuPackRoute
   '/productos/$slug': typeof ProductosSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/productos/$slug'
+  fullPaths: '/' | '/arma-tu-pack' | '/productos/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/productos/$slug'
-  id: '__root__' | '/' | '/productos/$slug'
+  to: '/' | '/arma-tu-pack' | '/productos/$slug'
+  id: '__root__' | '/' | '/arma-tu-pack' | '/productos/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ArmaTuPackRoute: typeof ArmaTuPackRoute
   ProductosSlugRoute: typeof ProductosSlugRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/arma-tu-pack': {
+      id: '/arma-tu-pack'
+      path: '/arma-tu-pack'
+      fullPath: '/arma-tu-pack'
+      preLoaderRoute: typeof ArmaTuPackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/productos/$slug': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ArmaTuPackRoute: ArmaTuPackRoute,
   ProductosSlugRoute: ProductosSlugRoute,
 }
 export const routeTree = rootRouteImport
