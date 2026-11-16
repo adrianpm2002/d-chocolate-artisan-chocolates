@@ -201,3 +201,44 @@
     animation: none;
   }
 }
+
+/* Chocolate, ribbon and topping colours used by the pack drawings. */
+:root {
+  --choco-oscuro: oklch(0.32 0.06 40);
+  --choco-leche: oklch(0.52 0.09 52);
+  --choco-blanco: oklch(0.95 0.035 85);
+  --choco-rubi: oklch(0.64 0.13 8);
+  --dorado: oklch(0.8 0.12 85);
+  --pistache: oklch(0.76 0.11 125);
+  --liston-rojo: oklch(0.52 0.18 22);
+}
+
+@theme inline {
+  --color-dorado: var(--dorado);
+  --color-choco-oscuro: var(--choco-oscuro);
+}
+
+@keyframes pop-in {
+  0% { transform: scale(0.2); opacity: 0; }
+  70% { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@utility animate-pop {
+  animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pop {
+    animation: none;
+  }
+}

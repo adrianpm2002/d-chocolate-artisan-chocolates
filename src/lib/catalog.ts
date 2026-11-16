@@ -148,6 +148,39 @@ export function getContainer(id: string) {
   return CONTAINERS.find((c) => c.id === id);
 }
 
+/* ---------- Decorations (ribbon, topper, extras) ---------- */
+
+export type RibbonTone = "rosa" | "rojo" | "dorado" | "caramelo";
+export type Decoration = { id: string; label: string; detail: string; price: number };
+export type Ribbon = Decoration & { tone: RibbonTone | null };
+export type TopperKind = "flor" | "corazon" | "sello";
+export type Topper = Decoration & { kind: TopperKind | null };
+
+export const RIBBONS: Ribbon[] = [
+  { id: "sin-liston", label: "Sin listón", detail: "El envase tal cual.", price: 0, tone: null },
+  { id: "rosa", label: "Satín rosa", detail: "Listón de satín rosa con moño.", price: 15, tone: "rosa" },
+  { id: "rojo", label: "Rojo pasión", detail: "Ideal para San Valentín.", price: 15, tone: "rojo" },
+  { id: "dorado", label: "Dorado", detail: "Listón metalizado para celebraciones.", price: 18, tone: "dorado" },
+  { id: "caramelo", label: "Caramelo", detail: "Un tono cálido y elegante.", price: 15, tone: "caramelo" },
+];
+
+export const TOPPERS: Topper[] = [
+  { id: "ninguno", label: "Sin detalle", detail: "Sin adorno sobre el envase.", price: 0, kind: null },
+  { id: "flor", label: "Flor de azúcar", detail: "Flor hecha a mano en pasta de azúcar.", price: 20, kind: "flor" },
+  { id: "corazon", label: "Corazón dorado", detail: "Corazón de chocolate con brillo dorado.", price: 20, kind: "corazon" },
+  { id: "sello", label: "Sello D'ChocolAte", detail: "Nuestro perrito sellando tu regalo.", price: 10, kind: "sello" },
+];
+
+export const EXTRAS: Decoration[] = [
+  { id: "tarjeta", label: "Tarjeta", detail: "Tarjeta con tu dedicatoria escrita a mano.", price: 10 },
+  { id: "brillo", label: "Brillo dorado", detail: "Polvo dorado comestible sobre los bombones.", price: 15 },
+  { id: "bolsa", label: "Bolsa de regalo", detail: "Bolsa de papel con asas de listón.", price: 20 },
+];
+
+export const getRibbon = (id: string) => RIBBONS.find((r) => r.id === id);
+export const getTopper = (id: string) => TOPPERS.find((t) => t.id === id);
+export const getExtra = (id: string) => EXTRAS.find((e) => e.id === id);
+
 /* ---------- Products ---------- */
 
 const s = (piece: string, variant: string, count = 1): PackSlot[] =>
