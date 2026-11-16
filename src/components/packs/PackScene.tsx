@@ -8,7 +8,7 @@ import {
 } from "@/lib/catalog";
 import { type Slots, slotLayout } from "@/lib/packs";
 import { cn } from "@/lib/utils";
-import { ArtDefs, BowArt, HEART_PATH, PieceArt, Sparkle, TopperArt, useSvgPrefix } from "./art";
+import { ArtDefs, BowArt, RIBBON_FILL, HEART_PATH, PieceArt, Sparkle, TopperArt, useSvgPrefix } from "./art";
 
 type Theme = { frame: string; inner: string; cup: string; pleat: string };
 
@@ -97,7 +97,7 @@ export function PackScene({ container, slots, decor, selected = null, onSlotClic
       <g fill={`url(#${prefix}-sheen)`}>{frame(0)}</g>
       {decor?.ribbon && (
         <g clipPath={`url(#${frameClip})`}>
-          <g style={{ fill: ribbonVar(decor.ribbon) }}>
+          <g style={{ fill: RIBBON_FILL[decor.ribbon] }}>
             <rect x={bow.x - 3.5} y={-2} width={7} height={H + 4} />
             <rect x={-2} y={H / 2 - 3.5} width={W + 4} height={7} />
           </g>
@@ -212,6 +212,3 @@ export function PackScene({ container, slots, decor, selected = null, onSlotClic
   );
 }
 
-function ribbonVar(tone: RibbonTone) {
-  return tone === "rojo" ? "var(--liston-rojo)" : tone === "dorado" ? "var(--dorado)" : tone === "caramelo" ? "var(--caramel)" : "var(--rosa)";
-}
