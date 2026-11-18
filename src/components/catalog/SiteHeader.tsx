@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, Wand2 } from "lucide-react";
 import { toast } from "sonner";
 import { BrandLogo } from "./BrandLogo";
 
@@ -18,6 +18,14 @@ export function SiteHeader() {
             activeOptions={{ exact: true, includeSearch: false }}
           >
             Catálogo
+          </Link>
+          <Link
+            to="/arma-tu-pack"
+            className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border-2 border-rosa bg-blush px-3 py-1.5 text-xs text-rosa-deep sm:text-sm transition-colors hover:bg-rosa hover:text-rosa-foreground"
+            activeProps={{ className: "bg-rosa text-rosa-foreground" }}
+            activeOptions={{ includeSearch: false }}
+          >
+            <Wand2 className="size-4" /> Arma tu caja
           </Link>
           <button
             type="button"

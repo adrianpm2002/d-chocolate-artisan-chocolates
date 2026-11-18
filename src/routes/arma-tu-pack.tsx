@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, Gift, Heart, Lock, Mail, ShoppingBag, Sparkles, Trash2, Wand2, X } from "lucide-react";
-import { useReducer, useState } from "react";
+import { useReducer, useRef, useState } from "react";
 import { toast } from "sonner";
 import { PieceThumb, RIBBON_FILL, ArtDefs, BowArt, TopperArt, useSvgPrefix } from "@/components/packs/art";
 import { OptionBubble, OptionRow } from "@/components/packs/OptionBubble";
@@ -75,6 +75,7 @@ function Builder({ search }: { search: BuildSearch }) {
   const [activePiece, setActivePiece] = useState<string>(PIECES[0]!.slug);
   const [lastSlot, setLastSlot] = useState<PackSlot | null>(null);
   const [hint, setHint] = useState<string | null>(null);
+  const panelRef = useRef<HTMLElement>(null);
 
   const container = getContainer(build.container)!;
   const filled = filledCount(build.slots);
@@ -98,6 +99,8 @@ function Builder({ search }: { search: BuildSearch }) {
     setStep("bombones");
     setHint(null);
     if (slot) setActivePiece(slot.piece);
+    // On phones the choices sit below the preview: bring them into view.
+    requestAnimationFrame(() => panelRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" }));
   };
 
   const add = (slot: PackSlot) => {
@@ -193,7 +196,7 @@ function Builder({ search }: { search: BuildSearch }) {
             })}
           </div>
 
-          <section role="tabpanel" aria-label={STEPS[stepIndex]?.label} className="rounded-3xl border border-border bg-card p-4 shadow-card sm:p-5">
+          <section ref={panelRef} role="tabpanel" aria-label={STEPS[stepIndex]?.label} className="scroll-mb-28 scroll-mt-20 lg:scroll-m-0 rounded-3xl border border-border bg-card p-4 shadow-card sm:p-5">
             {step === "empaque" && (
               <EmpaqueStep build={build} onChoose={changeContainer} />
             )}
@@ -327,7 +330,7 @@ function Stage({
         {formatPrice(total)}
       </div>
 
-      <div className="mx-auto flex aspect-square max-h-[44svh] w-full items-center justify-center px-6 pb-8 pt-10 sm:max-h-[30rem] lg:aspect-[5/4.6] lg:max-h-none lg:p-12">
+      <div className="mx-auto flex aspect-square max-h-[44svh] w-full items-center justify-center px-3 pb-5 pt-9 sm:max-h-[30rem] lg:aspect-[5/4.6] lg:max-h-none lg:p-12">
         <PackScene
           key={container.id}
           container={container}
@@ -340,8 +343,8 @@ function Stage({
       </div>
 
       {hasCard && (
-        <div className="absolute bottom-3 right-3 z-10 w-28 rotate-6 rounded-xl border border-border bg-card p-2.5 shadow-lift animate-rise sm:w-36">
-          <p className="line-clamp-4 font-script text-base leading-tight text-primary sm:text-lg">
+        <div className="absolute bottom-2 right-2 z-10 w-24 rotate-6 rounded-xl border border-border bg-card p-2 shadow-lift animate-rise sm:bottom-4 sm:right-4 sm:w-36 sm:p-2.5">
+          <p className="line-clamp-3 font-script text-sm leading-tight text-primary sm:line-clamp-4 sm:text-lg">
             {build.message.trim() || "Con mucho amor…"}
           </p>
           <Heart className="ml-auto mt-1 size-3.5 fill-rosa text-rosa" aria-hidden />

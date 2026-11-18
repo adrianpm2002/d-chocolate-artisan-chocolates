@@ -34,3 +34,5 @@ use the editor.
 - Catalog products, categories, filtering and sorting live in `src/lib/catalog.ts` as static sample data; swap that module's data source when a backend is added so pages keep the same API.
 - Catalog filters (search, category, sort) are URL search params on `/` so filtered views are shareable.
 - Brand logo, wordmark and mascot are asset pointers in `src/assets`; render the header logo through `BrandLogo` so brand changes stay in one place.
+- Pack slot operations and preview geometry live in `src/lib/packs.ts`; the pack builder's state (container, slots, ribbon, topper, extras, message) and its total live in `src/lib/builder.ts` as a pure reducer, so prices are testable and the same rules apply on every page.
+- Pieces, boxes, ribbons and toppers are drawn as SVG in `src/components/packs` from catalog data (piece shape + filling look), so any new filling or container shows up in the live preview without new photos.

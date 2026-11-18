@@ -1,10 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Heart, PawPrint, Search, X } from "lucide-react";
+import { ArrowRight, Heart, PawPrint, Search, Wand2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import heroImage from "@/assets/hero-bombones-corazon.jpg";
 import mascota from "@/assets/mascota-corazon.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/catalog/ProductCard";
+import { PackScene } from "@/components/packs/PackScene";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -16,6 +17,8 @@ import {
 import {
   CATEGORIES,
   PRODUCTS,
+  getContainer,
+  getProduct,
   SORT_OPTIONS,
   filterProducts,
   parseCatalogSearch,
@@ -125,6 +128,8 @@ function CatalogPage() {
         </div>
       </section>
 
+      <BuilderPromo />
+
       <section id="catalogo" className="mx-auto max-w-7xl scroll-mt-20 px-5 pt-16 sm:px-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -212,6 +217,39 @@ function CatalogPage() {
         )}
       </section>
     </>
+  );
+}
+
+function BuilderPromo() {
+  const pack = getProduct("san-valentin-20");
+  const container = pack?.kind === "pack" ? getContainer(pack.container) : undefined;
+  return (
+    <section className="mx-auto max-w-7xl px-5 pt-16 sm:px-8">
+      <Link
+        to="/arma-tu-pack"
+        className="group grid items-center gap-6 overflow-hidden rounded-[2.5rem] bg-primary p-6 text-primary-foreground shadow-lift sm:grid-cols-[1fr_auto] sm:p-10"
+      >
+        <div>
+          <p className="font-script text-2xl text-rosa">Tu regalo, a tu manera</p>
+          <h2 className="mt-1 text-3xl font-bold sm:text-4xl">Arma tu caja de bombones</h2>
+          <p className="mt-3 max-w-md text-sm text-primary-foreground/80">
+            Elige el envase, cada bombón y su relleno, el listón y los detalles. Mira cómo queda en tiempo real.
+          </p>
+          <span className="mt-6 inline-flex items-center gap-2 rounded-full bg-rosa px-5 py-2.5 text-sm font-extrabold text-rosa-foreground transition-transform group-hover:translate-x-1">
+            <Wand2 className="size-4" /> Empezar a armar <ArrowRight className="size-4" />
+          </span>
+        </div>
+        {pack?.kind === "pack" && container && (
+          <PackScene
+            container={container}
+            slots={pack.contents}
+            decor={{ ribbon: "dorado", topper: "sello", sparkle: true }}
+            className="mx-auto w-56 transition-transform duration-500 group-hover:rotate-3 sm:w-64"
+            title="Ejemplo de caja armada"
+          />
+        )}
+      </Link>
+    </section>
   );
 }
 
