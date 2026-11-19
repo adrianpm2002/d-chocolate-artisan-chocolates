@@ -4,6 +4,7 @@ import { useReducer, useRef, useState } from "react";
 import { toast } from "sonner";
 import { PieceThumb, RIBBON_FILL, ArtDefs, BowArt, TopperArt, useSvgPrefix } from "@/components/packs/art";
 import { OptionBubble, OptionRow } from "@/components/packs/OptionBubble";
+import { DeliveryChoice, PaymentChoice } from "@/components/catalog/OrderOptions";
 import { PackScene } from "@/components/packs/PackScene";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -34,7 +35,9 @@ import {
   parseBuildSearch,
   startBuild,
 } from "@/lib/builder";
+import { type Delivery, type Shortage, LOW_STOCK, availableStock, shortages, slotLines } from "@/lib/availability";
 import { emptySlots, filledCount, fitToCapacity, groupSlots } from "@/lib/packs";
+import { DEFAULT_PAYMENT, type PaymentMethodId, formatMoney, priceFor } from "@/lib/pricing";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/arma-tu-pack")({
@@ -81,6 +84,10 @@ function Builder({ search }: { search: BuildSearch }) {
   const filled = filledCount(build.slots);
   const missing = container.capacity - filled;
   const total = buildPrice(build);
+  const [payment, setPayment] = useState<PaymentMethodId>(DEFAULT_PAYMENT);
+  const [delivery, setDelivery] = useState<Delivery>("ahora");
+  const lack = shortages(slotLines(build.slots), delivery);
+  const toPay = formatMoney(priceFor(total, payment));
   const base = build.base ? getProduct(build.base) : undefined;
   const ribbon = getRibbon(build.ribbon);
   const topper = getTopper(build.topper);
@@ -157,7 +164,7 @@ function Builder({ search }: { search: BuildSearch }) {
       <div className="mt-4 grid gap-5 lg:mt-8 lg:grid-cols-[1.2fr_1fr] lg:gap-10">
         {/* Live preview */}
         <div className="lg:sticky lg:top-24 lg:self-start">
-          <Stage build={build} selected={selected} onSlotClick={onSlotClick} total={total} filled={filled} />
+          <Stage build={build} selected={selected} onSlotClick={onSlotClick} price={toPay} filled={filled} />
         </div>
 
         {/* Choices */}
@@ -270,10 +277,18 @@ function Builder({ search }: { search: BuildSearch }) {
             </div>
           </section>
 
-          <Summary build={build} />
+          <Summary
+            build={build}
+            total={total}
+            payment={payment}
+            onPayment={setPayment}
+            delivery={delivery}
+            onDelivery={setDelivery}
+            lack={lack}
+          />
 
           <div className="hidden lg:block">
-            <OrderButton build={build} total={total} missing={missing} />
+            <OrderButton build={build} price={toPay} missing={missing} delivery={delivery} short={lack.length > 0} />
           </div>
         </div>
       </div>
@@ -281,7 +296,7 @@ function Builder({ search }: { search: BuildSearch }) {
       {/* Mobile order bar */}
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur-md lg:hidden">
         <div className="mx-auto max-w-xl">
-          <OrderButton build={build} total={total} missing={missing} />
+          <OrderButton build={build} price={toPay} missing={missing} delivery={delivery} short={lack.length > 0} />
         </div>
       </div>
     </div>
@@ -302,13 +317,13 @@ function Stage({
   build,
   selected,
   onSlotClick,
-  total,
+  price,
   filled,
 }: {
   build: Build;
   selected: number | null;
   onSlotClick: (i: number) => void;
-  total: number;
+  price: string;
   filled: number;
 }) {
   const container = getContainer(build.container)!;
@@ -327,7 +342,7 @@ function Stage({
         {filled}/{container.capacity} piezas
       </div>
       <div className="absolute right-3 top-3 z-10 rounded-full bg-primary px-3 py-1 font-display text-sm font-bold text-primary-foreground shadow-card">
-        {formatPrice(total)}
+        {price}
       </div>
 
       <div className="mx-auto flex aspect-square max-h-[44svh] w-full items-center justify-center px-3 pb-5 pt-9 sm:max-h-[30rem] lg:aspect-[5/4.6] lg:max-h-none lg:p-12">
@@ -434,6 +449,7 @@ function BombonesStep(props: BombonesProps) {
               key={v.id}
               label={v.label}
               sub={formatPrice(v.price)}
+              note={stockHint(build, piece.slug, v.id)}
               selected={v.id === selectedSlot.variant}
               onSelect={() => props.onVariantAt(selected, v.id)}
             >
@@ -521,6 +537,7 @@ function BombonesStep(props: BombonesProps) {
                 key={v.id}
                 label={v.label}
                 sub={formatPrice(v.price)}
+                note={stockHint(build, piece.slug, v.id)}
                 count={count}
                 onSelect={() => props.onAdd(slot)}
                 onMinus={() => props.onRemoveOne(slot)}
@@ -650,7 +667,25 @@ function StepTitle({ children, className }: { children: React.ReactNode; classNa
 
 /* ---------- Summary and order ---------- */
 
-function Summary({ build }: { build: Build }) {
+/** Today's stock left for a filling once the pieces already in the box are counted. */
+function stockHint(build: Build, piece: string, variant: string) {
+  const inBox = build.slots.filter((s) => s?.piece === piece && s.variant === variant).length;
+  const left = availableStock(piece, variant) - inBox;
+  if (left <= 0) return inBox > 0 && left === 0 ? "No quedan más hoy" : "Agotado hoy";
+  return left <= LOW_STOCK ? `Quedan ${left} hoy` : undefined;
+}
+
+type SummaryProps = {
+  build: Build;
+  total: number;
+  payment: PaymentMethodId;
+  onPayment: (id: PaymentMethodId) => void;
+  delivery: Delivery;
+  onDelivery: (d: Delivery) => void;
+  lack: Shortage[];
+};
+
+function Summary({ build, total, payment, onPayment, delivery, onDelivery, lack }: SummaryProps) {
   const container = getContainer(build.container)!;
   const groups = groupSlots(build.slots);
   const pieces = packPrice(build.container, build.slots) - container.price;
@@ -682,6 +717,27 @@ function Summary({ build }: { build: Build }) {
           <span>Bombones {formatPrice(pieces)} · Decoración {formatPrice(decor)}</span>
         </div>
       </dl>
+      <div className="mt-4 grid gap-4 border-t border-border pt-4">
+        <DeliveryChoice value={delivery} onChange={onDelivery} nowAvailable />
+        {lack.length > 0 && (
+          <div role="alert" className="rounded-2xl bg-blush px-3 py-2.5 text-sm text-rosa-deep">
+            <p className="font-extrabold">Hoy no alcanza para entregarla ya:</p>
+            <ul className="mt-1 list-inside list-disc text-xs font-semibold">
+              {lack.map((l) => {
+                const piece = getPiece(l.product);
+                const v = piece && getVariant(piece, l.variant);
+                return (
+                  <li key={`${l.product}:${l.variant}`}>
+                    {piece?.name} · {v?.label}: pides {l.qty}, {l.available === 0 ? "no queda ninguno" : `hay ${l.available}`}
+                  </li>
+                );
+              })}
+            </ul>
+            <p className="mt-1.5 text-xs">Cambia esos rellenos o pídela por encargo para otra fecha.</p>
+          </div>
+        )}
+        <PaymentChoice amount={total} value={payment} onChange={onPayment} />
+      </div>
     </details>
   );
 }
@@ -695,7 +751,19 @@ function Line({ label, value, muted }: { label: string; value: number; muted?: b
   );
 }
 
-function OrderButton({ build, total, missing }: { build: Build; total: number; missing: number }) {
+function OrderButton({
+  build,
+  price,
+  missing,
+  delivery,
+  short,
+}: {
+  build: Build;
+  price: string;
+  missing: number;
+  delivery: Delivery;
+  short: boolean;
+}) {
   const capacity = build.slots.length;
   const pct = ((capacity - missing) / capacity) * 100;
   return (
@@ -707,14 +775,24 @@ function OrderButton({ build, total, missing }: { build: Build; total: number; m
         variant="brand"
         size="xl"
         className="w-full justify-between"
-        disabled={missing > 0}
-        onClick={() => toast("¡Tu caja está lista!", { description: "El carrito estará disponible en el próximo módulo." })}
+        disabled={missing > 0 || short}
+        onClick={() =>
+          toast("¡Tu caja está lista!", {
+            description: `${delivery === "encargo" ? "Por encargo" : "Lo antes posible"} · ${price}. El carrito estará disponible en el próximo módulo.`,
+          })
+        }
       >
         <span className="inline-flex items-center gap-2">
           <ShoppingBag />
-          {missing > 0 ? `Faltan ${missing} ${missing === 1 ? "bombón" : "bombones"}` : "Agregar al pedido"}
+          {missing > 0
+            ? `Faltan ${missing} ${missing === 1 ? "bombón" : "bombones"}`
+            : short
+              ? "No alcanza para hoy"
+              : delivery === "encargo"
+                ? "Encargar mi caja"
+                : "Agregar al pedido"}
         </span>
-        <span className="font-display text-lg">{formatPrice(total)}</span>
+        <span className="font-display text-lg">{price}</span>
       </Button>
     </div>
   );

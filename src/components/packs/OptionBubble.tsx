@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 type Props = {
   label: string;
   sub?: string;
+  /** Small highlighted note, e.g. "Quedan 3 hoy". */
+  note?: string | undefined;
   selected?: boolean;
   count?: number;
   onSelect: () => void;
@@ -14,7 +16,7 @@ type Props = {
 };
 
 /** Round option like a sticker: tap to choose, badge shows how many are in the pack. */
-export function OptionBubble({ label, sub, selected, count, onSelect, onMinus, disabled, children }: Props) {
+export function OptionBubble({ label, sub, note, selected, count, onSelect, onMinus, disabled, children }: Props) {
   return (
     <div className="relative flex w-[4.75rem] shrink-0 snap-start flex-col items-center gap-1 text-center">
       <button
@@ -47,6 +49,7 @@ export function OptionBubble({ label, sub, selected, count, onSelect, onMinus, d
       )}
       <span className="mt-0.5 line-clamp-2 text-[0.72rem] font-extrabold leading-tight text-foreground">{label}</span>
       {sub && <span className="text-[0.68rem] font-semibold text-muted-foreground">{sub}</span>}
+      {note && <span className="text-[0.62rem] font-extrabold leading-tight text-rosa-deep">{note}</span>}
     </div>
   );
 }

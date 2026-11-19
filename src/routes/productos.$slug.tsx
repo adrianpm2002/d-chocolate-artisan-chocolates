@@ -1,11 +1,12 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Heart, Leaf, ShoppingBag, Wand2 } from "lucide-react";
+import { ArrowLeft, Leaf, ShoppingBag, Wand2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { PieceThumb } from "@/components/packs/art";
 import { PackScene } from "@/components/packs/PackScene";
 import { ProductCard } from "@/components/catalog/ProductCard";
 import { ProductTag } from "@/components/catalog/ProductTag";
+import { CashHint, DeliveryChoice, PaymentChoice, QuantityStepper, StockNote } from "@/components/catalog/OrderOptions";
 import { Button } from "@/components/ui/button";
 import {
   PRODUCTS,
@@ -19,7 +20,9 @@ import {
   getVariant,
   productPrice,
 } from "@/lib/catalog";
+import { type Delivery, availableStock, maxQuantity, packsAvailable, stockStatus } from "@/lib/availability";
 import { groupSlots } from "@/lib/packs";
+import { DEFAULT_PAYMENT, type PaymentMethodId, formatMoney, priceFor } from "@/lib/pricing";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/productos/$slug")({
@@ -137,8 +140,19 @@ function ProductPage() {
 
 function IndividualBuy({ product }: { product: IndividualProduct }) {
   const [variantId, setVariantId] = useState(product.variants[0]!.id);
+  const [delivery, setDelivery] = useState<Delivery>("ahora");
+  const [qty, setQty] = useState(1);
+  const [payment, setPayment] = useState<PaymentMethodId>(DEFAULT_PAYMENT);
   const variant = getVariant(product, variantId) ?? product.variants[0]!;
   const choosable = product.variants.length > 1;
+
+  const stock = availableStock(product.slug, variant.id);
+  // Sold out today: it can still be ordered for another date.
+  const when: Delivery = stock > 0 ? delivery : "encargo";
+  const max = Math.max(1, maxQuantity(stock, when));
+  const quantity = Math.min(qty, max);
+  const subtotal = variant.price * quantity;
+  const toPay = formatMoney(priceFor(subtotal, payment));
 
   return (
     <>
@@ -148,6 +162,8 @@ function IndividualBuy({ product }: { product: IndividualProduct }) {
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             {product.variants.map((v) => {
               const active = v.id === variant.id;
+              const left = availableStock(product.slug, v.id);
+              const status = stockStatus(left);
               return (
                 <button
                   key={v.id}
@@ -166,7 +182,13 @@ function IndividualBuy({ product }: { product: IndividualProduct }) {
                   )}
                   <span className="min-w-0 flex-1">
                     <span className="block text-sm font-extrabold text-foreground">{v.label}</span>
-                    {v.detail && <span className="block truncate text-xs text-muted-foreground">{v.detail}</span>}
+                    {status === "disponible" ? (
+                      v.detail && <span className="block truncate text-xs text-muted-foreground">{v.detail}</span>
+                    ) : (
+                      <span className="block text-xs font-bold text-rosa-deep">
+                        {status === "agotado" ? "Agotado hoy · por encargo" : `Quedan ${left} hoy`}
+                      </span>
+                    )}
                   </span>
                   <span className="font-display text-base font-bold text-primary">{formatPrice(v.price)}</span>
                 </button>
@@ -176,38 +198,58 @@ function IndividualBuy({ product }: { product: IndividualProduct }) {
         </fieldset>
       )}
 
-      <p className="mt-6 font-display text-4xl font-bold text-primary" aria-live="polite">
-        {formatPrice(variant.price)}
-        {choosable && <span className="ml-2 font-sans text-sm font-bold text-muted-foreground">{variant.label}</span>}
-      </p>
+      <div className="mt-6" aria-live="polite">
+        <p className="font-display text-4xl font-bold text-primary">
+          {formatPrice(variant.price)}
+          {choosable && <span className="ml-2 font-sans text-sm font-bold text-muted-foreground">{variant.label}</span>}
+        </p>
+        <p className="mt-1 text-xs font-semibold text-muted-foreground">Precio por transferencia</p>
+        <CashHint amount={variant.price} className="mt-1" />
+      </div>
 
-      <div className="mt-6 flex flex-wrap items-center gap-4">
-        <Button
-          variant="brand"
-          size="xl"
-          disabled={!product.inStock}
-          onClick={() =>
-            toast(`${product.name}${choosable ? ` · ${variant.label}` : ""}`, {
-              description: "El carrito estará disponible en el próximo módulo.",
-            })
-          }
-        >
-          <ShoppingBag /> {product.inStock ? "Agregar al pedido" : "Agotado"}
-        </Button>
-        {product.piece ? (
-          <Link to="/arma-tu-pack" className="inline-flex items-center gap-1.5 text-sm font-extrabold text-caramel hover:text-primary">
-            <Wand2 className="size-4" /> Ponlo en tu propia caja
-          </Link>
-        ) : (
-          product.inStock && <Available />
+      <StockNote units={stock} className="mt-4" />
+
+      <div className="mt-6 grid gap-5 rounded-3xl border border-border bg-card p-4 sm:p-5">
+        <DeliveryChoice value={when} onChange={setDelivery} nowAvailable={stock > 0} />
+        <PaymentChoice amount={subtotal} value={payment} onChange={setPayment} />
+        <div className="flex flex-wrap items-center gap-3">
+          <QuantityStepper value={quantity} max={max} onChange={setQty} />
+          <Button
+            variant="brand"
+            size="xl"
+            className="flex-1 justify-between"
+            onClick={() =>
+              toast(`${quantity} × ${product.name}${choosable ? ` · ${variant.label}` : ""}`, {
+                description: `${when === "encargo" ? "Por encargo" : "Lo antes posible"} · ${toPay}. El carrito estará disponible en el próximo módulo.`,
+              })
+            }
+          >
+            <span className="inline-flex items-center gap-2">
+              <ShoppingBag /> {when === "encargo" ? "Encargar" : "Agregar"}
+            </span>
+            <span className="font-display text-lg">{toPay}</span>
+          </Button>
+        </div>
+        {when === "ahora" && quantity >= max && stock > 0 && (
+          <p className="-mt-2 text-xs font-semibold text-muted-foreground">
+            Hoy solo hay {stock}. Si necesitas más, pídelo por encargo.
+          </p>
         )}
       </div>
+
+      {product.piece && (
+        <Link to="/arma-tu-pack" className="mt-4 inline-flex items-center gap-1.5 text-sm font-extrabold text-caramel hover:text-primary">
+          <Wand2 className="size-4" /> Ponlo en tu propia caja
+        </Link>
+      )}
     </>
   );
 }
 
 function PackBuy({ product }: { product: PackProduct }) {
   const container = getContainer(product.container)!;
+  const price = productPrice(product);
+  const stock = packsAvailable(product.contents);
   return (
     <>
       <div className="mt-8 rounded-3xl border border-border bg-card p-5">
@@ -226,7 +268,12 @@ function PackBuy({ product }: { product: PackProduct }) {
         </ul>
       </div>
 
-      <p className="mt-6 font-display text-4xl font-bold text-primary">{formatPrice(productPrice(product))}</p>
+      <div className="mt-6">
+        <p className="font-display text-4xl font-bold text-primary">{formatPrice(price)}</p>
+        <p className="mt-1 text-xs font-semibold text-muted-foreground">Precio por transferencia</p>
+        <CashHint amount={price} className="mt-1" />
+      </div>
+      <StockNote units={stock} unit="cajas" className="mt-4" />
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <Button asChild variant="brand" size="xl">
@@ -237,22 +284,17 @@ function PackBuy({ product }: { product: PackProduct }) {
         <Button
           variant="outline"
           size="xl"
-          disabled={!product.inStock}
-          onClick={() => toast(product.name, { description: "El carrito estará disponible en el próximo módulo." })}
+          onClick={() =>
+            toast(product.name, {
+              description: `${stock > 0 ? "Lo antes posible" : "Por encargo"}. El carrito estará disponible en el próximo módulo.`,
+            })
+          }
         >
-          <ShoppingBag /> Agregar tal cual
+          <ShoppingBag /> {stock > 0 ? "Agregar tal cual" : "Encargar tal cual"}
         </Button>
       </div>
       <p className="mt-3 text-sm text-muted-foreground">Cambia el relleno de cada bombón y agrega listón, detalles o tarjeta.</p>
     </>
-  );
-}
-
-function Available() {
-  return (
-    <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-      <Heart className="size-4 fill-rosa text-rosa" aria-hidden /> Disponible, hecho con mucho amor
-    </span>
   );
 }
 

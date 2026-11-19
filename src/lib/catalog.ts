@@ -56,7 +56,6 @@ type BaseProduct = {
   ingredients: string[];
   allergens: string[];
   tag?: "Nuevo" | "Más vendido" | "Edición limitada";
-  inStock: boolean;
   image?: string;
 };
 
@@ -199,7 +198,6 @@ export const PRODUCTS: Product[] = [
       "Nuestro bombón de siempre: una cubierta fina de chocolate templado con un relleno cremoso. El precio cambia según el relleno que elijas.",
     ingredients: ["Chocolate oscuro", "Chocolate de leche", "Chocolate blanco", "Crema", "Avellana", "Frutas naturales"],
     allergens: ["Leche", "Frutos secos", "Soya"],
-    inStock: true,
     image: bombonClasico,
     variants: [
       { id: "ganache-oscuro", label: "Ganache oscuro", detail: "Chocolate 70% y crema", price: 18, look: { shell: "oscuro", topping: "hilos", accent: "dorado" } },
@@ -222,7 +220,6 @@ export const PRODUCTS: Product[] = [
     ingredients: ["Chocolate rubí", "Chocolate de leche", "Chocolate blanco", "Fresa", "Frambuesa"],
     allergens: ["Leche", "Soya"],
     tag: "Nuevo",
-    inStock: true,
     image: bombonCorazon,
     variants: [
       { id: "ganache-leche", label: "Ganache de leche", detail: "Suave y cremoso", price: 22, look: { shell: "leche", topping: "hilos", accent: "rosa" } },
@@ -242,7 +239,6 @@ export const PRODUCTS: Product[] = [
       "Trufas suaves de ganache, enrolladas a mano una por una. Elige el sabor; el precio depende del relleno.",
     ingredients: ["Chocolate oscuro", "Crema", "Café", "Cacao en polvo", "Coco"],
     allergens: ["Leche"],
-    inStock: true,
     image: trufasCafe,
     variants: [
       { id: "cacao", label: "Cacao amargo", detail: "Clásica", price: 18, look: { shell: "leche", topping: "polvo", accent: "oscuro" } },
@@ -262,7 +258,6 @@ export const PRODUCTS: Product[] = [
       "Turrón de miel y frutos secos tostados, cortado en cuadros y bañado en chocolate. Elige el fruto seco.",
     ingredients: ["Miel", "Almendra", "Avellana", "Pistache", "Chocolate"],
     allergens: ["Frutos secos", "Huevo", "Leche"],
-    inStock: true,
     image: turron,
     variants: [
       { id: "almendra", label: "Almendra tostada", price: 20, look: { shell: "leche", topping: "nuez", accent: "dorado" } },
@@ -283,7 +278,6 @@ export const PRODUCTS: Product[] = [
     ingredients: ["Chocolate rubí", "Chocolate de leche", "Chocolate blanco", "Fresa", "Frambuesa"],
     allergens: ["Leche", "Soya"],
     tag: "Edición limitada",
-    inStock: true,
     contents: [
       ...s("bombon-corazon", "fresa"),
       ...s("bombon-corazon", "ganache-leche", 7),
@@ -306,7 +300,6 @@ export const PRODUCTS: Product[] = [
     ingredients: ["Chocolate oscuro", "Chocolate de leche", "Crema", "Avellana", "Frutas naturales"],
     allergens: ["Leche", "Frutos secos", "Soya"],
     tag: "Más vendido",
-    inStock: true,
     image: bombones,
     contents: [
       ...s("bombon-clasico", "ganache-oscuro", 4),
@@ -327,7 +320,6 @@ export const PRODUCTS: Product[] = [
       "Corazones, trufas, bombones y turrón en una caja rígida con listón. Incluye tarjeta para dedicatoria. Puedes cambiar el relleno de cada pieza.",
     ingredients: ["Chocolate oscuro", "Chocolate de leche", "Chocolate blanco", "Rellenos variados", "Almendra"],
     allergens: ["Leche", "Frutos secos", "Soya", "Huevo"],
-    inStock: true,
     image: cajaRegalo,
     contents: [
       ...s("bombon-corazon", "fresa", 4),
@@ -350,7 +342,6 @@ export const PRODUCTS: Product[] = [
       "Elaborada en pequeños lotes con cacao fino de aroma. Textura sedosa, notas a nuez tostada y frutos rojos, con un amargor equilibrado.",
     ingredients: ["Pasta de cacao", "Azúcar de caña", "Manteca de cacao"],
     allergens: ["Puede contener trazas de leche y frutos secos"],
-    inStock: true,
     image: tableta70,
     variants: [{ id: "unica", label: "Tableta de 80 g", price: 135 }],
   },
@@ -365,7 +356,6 @@ export const PRODUCTS: Product[] = [
       "Fresas seleccionadas el mismo día, cubiertas en chocolate oscuro 60% y decoradas con chocolate blanco. Ideales para regalar o compartir.",
     ingredients: ["Fresa fresca", "Chocolate oscuro 60%", "Chocolate blanco"],
     allergens: ["Leche", "Soya"],
-    inStock: true,
     image: fresas,
     variants: [{ id: "unica", label: "Charola de 8 piezas", price: 260 }],
   },
@@ -380,7 +370,6 @@ export const PRODUCTS: Product[] = [
       "Un contraste fresco y crujiente: chocolate blanco con vainilla natural, frambuesas liofilizadas y pistache tostado.",
     ingredients: ["Manteca de cacao", "Leche entera", "Azúcar", "Frambuesa", "Pistache", "Vainilla"],
     allergens: ["Leche", "Frutos secos"],
-    inStock: true,
     image: blancoFrambuesa,
     variants: [{ id: "unica", label: "Tableta de 90 g", price: 150 }],
   },
@@ -395,7 +384,6 @@ export const PRODUCTS: Product[] = [
       "Discos de chocolate oscuro y de leche decorados con almendra, pistache, arándano y chabacano. Un detalle divertido para fiestas y mesas de dulces.",
     ingredients: ["Chocolate oscuro", "Chocolate de leche", "Almendra", "Pistache", "Arándano", "Chabacano"],
     allergens: ["Leche", "Frutos secos", "Soya"],
-    inStock: false,
     image: paletas,
     variants: [{ id: "unica", label: "Paquete de 6 piezas", price: 180 }],
   },
@@ -443,6 +431,8 @@ export function hasPriceRange(product: Product) {
 
 /* ---------- Filtering ---------- */
 
+export { formatPrice } from "./pricing";
+
 export type CatalogFilters = {
   q?: string | undefined;
   categoria?: CategoryId | undefined;
@@ -482,10 +472,6 @@ export function filterProducts(products: Product[], filters: CatalogFilters): Pr
 
 export function categoryLabel(id: CategoryId) {
   return CATEGORIES.find((c) => c.id === id)?.label ?? id;
-}
-
-export function formatPrice(value: number) {
-  return `$${value.toLocaleString("es", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 const categoryIds = new Set<string>(CATEGORIES.map((c) => c.id));

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import heroImage from "@/assets/hero-bombones-corazon.jpg";
 import mascota from "@/assets/mascota-corazon.png.asset.json";
 import { Button } from "@/components/ui/button";
+import { PaymentNote } from "@/components/catalog/OrderOptions";
 import { ProductCard } from "@/components/catalog/ProductCard";
 import { PackScene } from "@/components/packs/PackScene";
 import { Input } from "@/components/ui/input";
@@ -138,6 +139,7 @@ function CatalogPage() {
             <p className="mt-1 text-sm text-muted-foreground">
               {products.length} {products.length === 1 ? "producto" : "productos"}
             </p>
+            <PaymentNote className="mt-3" />
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
             <div className="relative sm:w-72">

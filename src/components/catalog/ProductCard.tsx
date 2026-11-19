@@ -3,9 +3,14 @@ import { Heart } from "lucide-react";
 import { type Product, categoryLabel, formatPrice, hasPriceRange, productPrice } from "@/lib/catalog";
 import { PackScene } from "@/components/packs/PackScene";
 import { getContainer } from "@/lib/catalog";
+import { productStock, stockStatus } from "@/lib/availability";
+import { CashHint } from "./OrderOptions";
 import { ProductTag } from "./ProductTag";
 
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
+  const stock = productStock(product);
+  const status = stockStatus(stock);
+  const price = productPrice(product);
   return (
     <Link
       to="/productos/$slug"
@@ -36,9 +41,14 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         ) : null}
         <div className="absolute left-3 top-3 flex gap-2">
           {product.tag && <ProductTag tag={product.tag} />}
-          {!product.inStock && (
+          {status === "agotado" && (
             <span className="rounded-full bg-background/90 px-3 py-1 text-xs font-bold text-muted-foreground">
-              Agotado
+              Agotado hoy · por encargo
+            </span>
+          )}
+          {status === "pocas" && (
+            <span className="rounded-full bg-background/90 px-3 py-1 text-xs font-extrabold text-rosa-deep">
+              {stock === 1 ? "¡Último de hoy!" : `Quedan ${stock} hoy`}
             </span>
           )}
         </div>
@@ -56,10 +66,13 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         <h3 className="text-xl font-semibold leading-tight text-foreground">{product.name}</h3>
         <p className="line-clamp-2 text-sm text-muted-foreground">{product.short}</p>
         <div className="mt-auto flex items-end justify-between gap-3 pt-4">
-          <span className="font-display text-2xl font-bold text-primary">
-            {hasPriceRange(product) ? "Desde " : ""}
-              {formatPrice(productPrice(product))}
-          </span>
+          <div className="min-w-0">
+            <span className="font-display text-2xl font-bold text-primary">
+              {hasPriceRange(product) ? "Desde " : ""}
+              {formatPrice(price)}
+            </span>
+            <CashHint amount={price} className="mt-0.5" />
+          </div>
           <span className="max-w-[45%] text-right text-xs font-semibold text-muted-foreground">
             {product.presentation}
           </span>
