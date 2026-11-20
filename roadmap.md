@@ -8,3 +8,7 @@
 - [x] Packs predefinidos: vista dibujada y "Personalizar este pack" (solo rellenos)
 - [x] Enlaces al armador en cabecera e inicio
 - [ ] Precios reales de envases, rellenos y decoración (por ahora de ejemplo, confirmado por el cliente)
+- [x] Acápite 3: precios en CUP (transferencia), efectivo −20% a todo el pedido, disponibilidad según producción del día, encargos para otra fecha, pedidos con precio fijo
+- [ ] Monedas y tasas de cambio configurables (panel de administración)
+- [ ] Producción del día real (por ahora existencias de ejemplo; se cargará desde el panel)
+- [ ] Confirmar si lo agotado hoy se puede encargar para otra fecha (esperando respuesta; por ahora sí)

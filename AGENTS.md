@@ -36,3 +36,6 @@ use the editor.
 - Brand logo, wordmark and mascot are asset pointers in `src/assets`; render the header logo through `BrandLogo` so brand changes stay in one place.
 - Pack slot operations and preview geometry live in `src/lib/packs.ts`; the pack builder's state (container, slots, ribbon, topper, extras, message) and its total live in `src/lib/builder.ts` as a pure reducer, so prices are testable and the same rules apply on every page.
 - Pieces, boxes, ribbons and toppers are drawn as SVG in `src/components/packs` from catalog data (piece shape + filling look), so any new filling or container shows up in the live preview without new photos.
+- Money rules live in `src/lib/pricing.ts` (catalog amounts are base-currency transfer prices; `priceFor` applies the payment method's discount and currency), so a future admin-configured currency list only changes that module.
+- Today's stock and its rules live in `src/lib/availability.ts`, separate from catalog data, because production changes daily; only immediate-delivery orders consume it.
+- Orders copy each line's unit price when placed (`src/lib/orders.ts` `placeOrder`), so catalog edits never change existing orders.
