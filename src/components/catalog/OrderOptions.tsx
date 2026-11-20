@@ -142,7 +142,7 @@ export function StockNote({ units, unit = "unidades", className }: { units: numb
     >
       <Heart className={cn("size-4", status === "agotado" ? "text-muted-foreground" : "fill-rosa text-rosa")} aria-hidden />
       {status === "agotado"
-        ? "Agotado hoy · puedes encargarlo para otra fecha"
+        ? "Agotado hoy · puedes encargarlo para otra fecha (sujeto a aprobación)"
         : status === "pocas"
           ? `¡Quedan solo ${units} ${units === 1 ? unit.replace(/es$|s$/, "") : unit} hoy!`
           : `Disponible hoy · ${units} ${unit} listas`}

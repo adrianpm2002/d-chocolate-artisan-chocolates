@@ -220,7 +220,7 @@ function IndividualBuy({ product }: { product: IndividualProduct }) {
             className="flex-1 justify-between"
             onClick={() =>
               toast(`${quantity} × ${product.name}${choosable ? ` · ${variant.label}` : ""}`, {
-                description: `${when === "encargo" ? "Por encargo" : "Lo antes posible"} · ${toPay}. El carrito estará disponible en el próximo módulo.`,
+                description: `${when === "encargo" ? (stock < quantity ? "Por encargo, sujeto a aprobación" : "Por encargo") : "Lo antes posible"} · ${toPay}. El carrito estará disponible en el próximo módulo.`,
               })
             }
           >
@@ -232,7 +232,7 @@ function IndividualBuy({ product }: { product: IndividualProduct }) {
         </div>
         {when === "ahora" && quantity >= max && stock > 0 && (
           <p className="-mt-2 text-xs font-semibold text-muted-foreground">
-            Hoy solo hay {stock}. Si necesitas más, pídelo por encargo.
+            Hoy solo hay {stock}. Si necesitas más, pídelo por encargo (sujeto a aprobación).
           </p>
         )}
       </div>
@@ -286,7 +286,7 @@ function PackBuy({ product }: { product: PackProduct }) {
           size="xl"
           onClick={() =>
             toast(product.name, {
-              description: `${stock > 0 ? "Lo antes posible" : "Por encargo"}. El carrito estará disponible en el próximo módulo.`,
+              description: `${stock > 0 ? "Lo antes posible" : "Por encargo, sujeto a aprobación"}. El carrito estará disponible en el próximo módulo.`,
             })
           }
         >

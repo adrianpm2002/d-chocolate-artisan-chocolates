@@ -11,4 +11,5 @@
 - [x] Acápite 3: precios en CUP (transferencia), efectivo −20% a todo el pedido, disponibilidad según producción del día, encargos para otra fecha, pedidos con precio fijo
 - [ ] Monedas y tasas de cambio configurables (panel de administración)
 - [ ] Producción del día real (por ahora existencias de ejemplo; se cargará desde el panel)
-- [ ] Confirmar si lo agotado hoy se puede encargar para otra fecha (esperando respuesta; por ahora sí)
+- [x] Encargos de lo agotado quedan pendientes de aprobación
+- [ ] Aprobar/rechazar encargos desde el panel de administración

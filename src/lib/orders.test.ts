@@ -20,4 +20,11 @@ describe("pedidos", () => {
       variant.price = original;
     }
   });
+
+  it("encargar algo agotado hoy queda pendiente de aprobación", () => {
+    const line = { product: "fresas-cubiertas", variant: "unica", label: "Fresas", qty: 1, unitPrice: 260 };
+    expect(placeOrder({ lines: [line], payment: "transferencia", delivery: "encargo" }).status).toBe("pendiente-aprobacion");
+    const ok = { product: "tableta-oscura-70", variant: "unica", label: "Tableta", qty: 1, unitPrice: 135 };
+    expect(placeOrder({ lines: [ok], payment: "transferencia", delivery: "encargo" }).status).toBe("confirmado");
+  });
 });

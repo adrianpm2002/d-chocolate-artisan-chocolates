@@ -87,6 +87,7 @@ function Builder({ search }: { search: BuildSearch }) {
   const [payment, setPayment] = useState<PaymentMethodId>(DEFAULT_PAYMENT);
   const [delivery, setDelivery] = useState<Delivery>("ahora");
   const lack = shortages(slotLines(build.slots), delivery);
+  const pendingApproval = delivery === "encargo" && shortages(slotLines(build.slots), "ahora").length > 0;
   const toPay = formatMoney(priceFor(total, payment));
   const base = build.base ? getProduct(build.base) : undefined;
   const ribbon = getRibbon(build.ribbon);
@@ -288,7 +289,7 @@ function Builder({ search }: { search: BuildSearch }) {
           />
 
           <div className="hidden lg:block">
-            <OrderButton build={build} price={toPay} missing={missing} delivery={delivery} short={lack.length > 0} />
+            <OrderButton build={build} price={toPay} missing={missing} delivery={delivery} short={lack.length > 0} approval={pendingApproval} />
           </div>
         </div>
       </div>
@@ -296,7 +297,7 @@ function Builder({ search }: { search: BuildSearch }) {
       {/* Mobile order bar */}
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur-md lg:hidden">
         <div className="mx-auto max-w-xl">
-          <OrderButton build={build} price={toPay} missing={missing} delivery={delivery} short={lack.length > 0} />
+          <OrderButton build={build} price={toPay} missing={missing} delivery={delivery} short={lack.length > 0} approval={pendingApproval} />
         </div>
       </div>
     </div>
@@ -733,7 +734,7 @@ function Summary({ build, total, payment, onPayment, delivery, onDelivery, lack 
                 );
               })}
             </ul>
-            <p className="mt-1.5 text-xs">Cambia esos rellenos o pídela por encargo para otra fecha.</p>
+            <p className="mt-1.5 text-xs">Cambia esos rellenos o pídela por encargo para otra fecha (sujeto a aprobación).</p>
           </div>
         )}
         <PaymentChoice amount={total} value={payment} onChange={onPayment} />
@@ -757,12 +758,14 @@ function OrderButton({
   missing,
   delivery,
   short,
+  approval,
 }: {
   build: Build;
   price: string;
   missing: number;
   delivery: Delivery;
   short: boolean;
+  approval: boolean;
 }) {
   const capacity = build.slots.length;
   const pct = ((capacity - missing) / capacity) * 100;
@@ -771,6 +774,9 @@ function OrderButton({
       <div className="mb-2 h-1.5 overflow-hidden rounded-full bg-muted" aria-hidden>
         <div className="h-full rounded-full bg-rosa-deep transition-all duration-500" style={{ width: `${pct}%` }} />
       </div>
+      {approval && missing === 0 && (
+        <p className="mb-2 text-xs font-bold text-rosa-deep">Lleva rellenos agotados hoy: tu encargo quedará pendiente de aprobación.</p>
+      )}
       <Button
         variant="brand"
         size="xl"
@@ -778,7 +784,7 @@ function OrderButton({
         disabled={missing > 0 || short}
         onClick={() =>
           toast("¡Tu caja está lista!", {
-            description: `${delivery === "encargo" ? "Por encargo" : "Lo antes posible"} · ${price}. El carrito estará disponible en el próximo módulo.`,
+            description: `${delivery === "encargo" ? (approval ? "Por encargo, sujeto a aprobación" : "Por encargo") : "Lo antes posible"} · ${price}. El carrito estará disponible en el próximo módulo.`,
           })
         }
       >
