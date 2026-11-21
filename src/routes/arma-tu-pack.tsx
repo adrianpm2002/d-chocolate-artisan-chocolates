@@ -39,6 +39,8 @@ import { type Delivery, type Shortage, LOW_STOCK, availableStock, shortages, slo
 import { emptySlots, filledCount, fitToCapacity, groupSlots } from "@/lib/packs";
 import { DEFAULT_PAYMENT, type PaymentMethodId, formatMoney, priceFor } from "@/lib/pricing";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/components/catalog/CartProvider";
+import { buildItem } from "@/lib/cart";
 
 export const Route = createFileRoute("/arma-tu-pack")({
   validateSearch: parseBuildSearch,
@@ -289,7 +291,7 @@ function Builder({ search }: { search: BuildSearch }) {
           />
 
           <div className="hidden lg:block">
-            <OrderButton build={build} price={toPay} missing={missing} delivery={delivery} short={lack.length > 0} approval={pendingApproval} />
+            <OrderButton build={build} payment={payment} price={toPay} missing={missing} delivery={delivery} short={lack.length > 0} approval={pendingApproval} />
           </div>
         </div>
       </div>
@@ -297,7 +299,7 @@ function Builder({ search }: { search: BuildSearch }) {
       {/* Mobile order bar */}
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur-md lg:hidden">
         <div className="mx-auto max-w-xl">
-          <OrderButton build={build} price={toPay} missing={missing} delivery={delivery} short={lack.length > 0} approval={pendingApproval} />
+          <OrderButton build={build} payment={payment} price={toPay} missing={missing} delivery={delivery} short={lack.length > 0} approval={pendingApproval} />
         </div>
       </div>
     </div>
@@ -754,6 +756,7 @@ function Line({ label, value, muted }: { label: string; value: number; muted?: b
 
 function OrderButton({
   build,
+  payment,
   price,
   missing,
   delivery,
@@ -761,12 +764,14 @@ function OrderButton({
   approval,
 }: {
   build: Build;
+  payment: PaymentMethodId;
   price: string;
   missing: number;
   delivery: Delivery;
   short: boolean;
   approval: boolean;
 }) {
+  const { dispatch } = useCart();
   const capacity = build.slots.length;
   const pct = ((capacity - missing) / capacity) * 100;
   return (
@@ -782,11 +787,10 @@ function OrderButton({
         size="xl"
         className="w-full justify-between"
         disabled={missing > 0 || short}
-        onClick={() =>
-          toast("¡Tu caja está lista!", {
-            description: `${delivery === "encargo" ? (approval ? "Por encargo, sujeto a aprobación" : "Por encargo") : "Lo antes posible"} · ${price}. El carrito estará disponible en el próximo módulo.`,
-          })
-        }
+        onClick={() => {
+          dispatch({ type: "add", item: buildItem(build, delivery), payment });
+          toast.success("¡Tu caja está en el carrito!", { description: `${price}${approval ? " · Sujeto a aprobación" : ""}` });
+        }}
       >
         <span className="inline-flex items-center gap-2">
           <ShoppingBag />

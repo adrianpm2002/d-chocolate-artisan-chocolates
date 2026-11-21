@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "@/components/catalog/SiteHeader";
 import { SiteFooter } from "@/components/catalog/SiteFooter";
 import { Toaster } from "@/components/ui/sonner";
+import { CartProvider } from "@/components/catalog/CartProvider";
 
 function NotFoundComponent() {
   return (
@@ -130,6 +131,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <CartProvider>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <div className="flex min-h-screen flex-col">
         <SiteHeader />
@@ -139,6 +141,7 @@ function RootComponent() {
         <SiteFooter />
       </div>
       <Toaster />
+      </CartProvider>
     </QueryClientProvider>
   );
 }

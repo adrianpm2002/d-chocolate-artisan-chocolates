@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ArmaTuPackRouteImport } from './routes/arma-tu-pack'
+import { Route as CarritoRouteImport } from './routes/carrito'
 import { Route as ProductosSlugRouteImport } from './routes/productos.$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +24,11 @@ const ArmaTuPackRoute = ArmaTuPackRouteImport.update({
   path: '/arma-tu-pack',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CarritoRoute = CarritoRouteImport.update({
+  id: '/carrito',
+  path: '/carrito',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductosSlugRoute = ProductosSlugRouteImport.update({
   id: '/productos/$slug',
   path: '/productos/$slug',
@@ -32,30 +38,34 @@ const ProductosSlugRoute = ProductosSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/arma-tu-pack': typeof ArmaTuPackRoute
+  '/carrito': typeof CarritoRoute
   '/productos/$slug': typeof ProductosSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/arma-tu-pack': typeof ArmaTuPackRoute
+  '/carrito': typeof CarritoRoute
   '/productos/$slug': typeof ProductosSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/arma-tu-pack': typeof ArmaTuPackRoute
+  '/carrito': typeof CarritoRoute
   '/productos/$slug': typeof ProductosSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/arma-tu-pack' | '/productos/$slug'
+  fullPaths: '/' | '/arma-tu-pack' | '/carrito' | '/productos/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/arma-tu-pack' | '/productos/$slug'
-  id: '__root__' | '/' | '/arma-tu-pack' | '/productos/$slug'
+  to: '/' | '/arma-tu-pack' | '/carrito' | '/productos/$slug'
+  id: '__root__' | '/' | '/arma-tu-pack' | '/carrito' | '/productos/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ArmaTuPackRoute: typeof ArmaTuPackRoute
+  CarritoRoute: typeof CarritoRoute
   ProductosSlugRoute: typeof ProductosSlugRoute
 }
 
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArmaTuPackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/carrito': {
+      id: '/carrito'
+      path: '/carrito'
+      fullPath: '/carrito'
+      preLoaderRoute: typeof CarritoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/productos/$slug': {
       id: '/productos/$slug'
       path: '/productos/$slug'
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ArmaTuPackRoute: ArmaTuPackRoute,
+  CarritoRoute: CarritoRoute,
   ProductosSlugRoute: ProductosSlugRoute,
 }
 export const routeTree = rootRouteImport

@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, ShoppingBag, Wand2, X } from "lucide-react";
-import { toast } from "sonner";
 import { BrandLogo } from "./BrandLogo";
+import { useCart } from "./CartProvider";
+import { Button } from "@/components/ui/button";
 
 export function SiteHeader() {
+  const { cart } = useCart();
+  const count = cart.items.reduce((sum, item) => sum + item.qty, 0);
   const [open, setOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
 
@@ -65,14 +68,12 @@ export function SiteHeader() {
             >
               <Wand2 className="size-4" /> Arma tu caja
             </Link>
-            <button
-              type="button"
-              aria-label="Carrito"
-              onClick={() => toast("El carrito estará disponible en el próximo módulo.")}
-              className="grid size-10 place-items-center rounded-full bg-primary text-primary-foreground transition-colors hover:bg-caramel"
-            >
-              <ShoppingBag className="size-4" />
-            </button>
+            <Button asChild size="icon" variant="brand" className="relative size-10 rounded-full">
+              <Link to="/carrito" aria-label={`Carrito, ${count} productos`}>
+                <ShoppingBag className="size-4" />
+                {count > 0 && <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-rosa-deep px-1 text-[10px] font-extrabold text-primary-foreground">{count > 99 ? "99+" : count}</span>}
+              </Link>
+            </Button>
           </nav>
         </div>
       </header>

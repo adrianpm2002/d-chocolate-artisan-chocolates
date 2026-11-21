@@ -13,3 +13,8 @@
 - [ ] Producción del día real (por ahora existencias de ejemplo; se cargará desde el panel)
 - [x] Encargos de lo agotado quedan pendientes de aprobación
 - [ ] Aprobar/rechazar encargos desde el panel de administración
+
+## Carrito de compras
+- [x] Integrar productos, packs y cajas personalizadas al carrito
+- [x] Mostrar cantidades, entrega, desglose y total según método de pago
+- [x] Verificar el carrito en móvil y escritorio

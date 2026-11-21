@@ -24,6 +24,8 @@ import { type Delivery, availableStock, maxQuantity, packsAvailable, stockStatus
 import { groupSlots } from "@/lib/packs";
 import { DEFAULT_PAYMENT, type PaymentMethodId, formatMoney, priceFor } from "@/lib/pricing";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/components/catalog/CartProvider";
+import { individualItem, predefinedItem } from "@/lib/cart";
 
 export const Route = createFileRoute("/productos/$slug")({
   loader: ({ params }) => {
@@ -139,6 +141,7 @@ function ProductPage() {
 }
 
 function IndividualBuy({ product }: { product: IndividualProduct }) {
+  const { dispatch } = useCart();
   const [variantId, setVariantId] = useState(product.variants[0]!.id);
   const [delivery, setDelivery] = useState<Delivery>("ahora");
   const [qty, setQty] = useState(1);
@@ -218,11 +221,10 @@ function IndividualBuy({ product }: { product: IndividualProduct }) {
             variant="brand"
             size="xl"
             className="flex-1 justify-between"
-            onClick={() =>
-              toast(`${quantity} × ${product.name}${choosable ? ` · ${variant.label}` : ""}`, {
-                description: `${when === "encargo" ? (stock < quantity ? "Por encargo, sujeto a aprobación" : "Por encargo") : "Lo antes posible"} · ${toPay}. El carrito estará disponible en el próximo módulo.`,
-              })
-            }
+            onClick={() => {
+              dispatch({ type: "add", item: individualItem(product, variant.id, quantity, when), payment });
+              toast.success("Agregado al carrito", { description: `${quantity} × ${product.name} · ${variant.label}` });
+            }}
           >
             <span className="inline-flex items-center gap-2">
               <ShoppingBag /> {when === "encargo" ? "Encargar" : "Agregar"}
@@ -247,6 +249,7 @@ function IndividualBuy({ product }: { product: IndividualProduct }) {
 }
 
 function PackBuy({ product }: { product: PackProduct }) {
+  const { dispatch } = useCart();
   const container = getContainer(product.container)!;
   const price = productPrice(product);
   const stock = packsAvailable(product.contents);
@@ -284,11 +287,10 @@ function PackBuy({ product }: { product: PackProduct }) {
         <Button
           variant="outline"
           size="xl"
-          onClick={() =>
-            toast(product.name, {
-              description: `${stock > 0 ? "Lo antes posible" : "Por encargo, sujeto a aprobación"}. El carrito estará disponible en el próximo módulo.`,
-            })
-          }
+          onClick={() => {
+            dispatch({ type: "add", item: predefinedItem(product, stock > 0 ? "ahora" : "encargo") });
+            toast.success("Agregado al carrito", { description: product.name });
+          }}
         >
           <ShoppingBag /> {stock > 0 ? "Agregar tal cual" : "Encargar tal cual"}
         </Button>
