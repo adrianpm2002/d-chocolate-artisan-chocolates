@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
   type ErrorComponentProps,
@@ -128,17 +129,18 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const isAdmin = useRouterState({ select: (state) => state.location.pathname === "/admin" || state.location.pathname.startsWith("/admin/") });
 
   return (
     <QueryClientProvider client={queryClient}>
       <CartProvider>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <div className="flex min-h-screen flex-col">
-        <SiteHeader />
+        {!isAdmin && <SiteHeader />}
         <main className="flex-1">
           <Outlet />
         </main>
-        <SiteFooter />
+        {!isAdmin && <SiteFooter />}
       </div>
       <Toaster />
       </CartProvider>

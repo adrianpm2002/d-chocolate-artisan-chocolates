@@ -18,3 +18,8 @@
 - [x] Integrar productos, packs y cajas personalizadas al carrito
 - [x] Mostrar cantidades, entrega, desglose y total según método de pago
 - [x] Verificar el carrito en móvil y escritorio
+
+## Administración · Dashboard de ventas
+- [ ] Crear el dashboard con ventas diarias, semanales y mensuales de ejemplo
+- [ ] Mostrar productos más vendidos y alertas de productos e insumos por reponer
+- [ ] Verificar gráficos, filtros y navegación en móvil y escritorio

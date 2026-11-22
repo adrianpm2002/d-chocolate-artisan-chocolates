@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu, ShoppingBag, Wand2, X } from "lucide-react";
+import { LayoutDashboard, Menu, ShoppingBag, Wand2, X } from "lucide-react";
 import { BrandLogo } from "./BrandLogo";
 import { useCart } from "./CartProvider";
 import { Button } from "@/components/ui/button";
@@ -74,6 +74,9 @@ export function SiteHeader() {
                 {count > 0 && <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-rosa-deep px-1 text-[10px] font-extrabold text-primary-foreground">{count > 99 ? "99+" : count}</span>}
               </Link>
             </Button>
+            <Button asChild variant="ghost" size="icon" className="hidden sm:inline-flex" title="Dashboard de ventas">
+              <Link to="/admin" aria-label="Dashboard de ventas"><LayoutDashboard /></Link>
+            </Button>
           </nav>
         </div>
       </header>
@@ -135,6 +138,9 @@ export function SiteHeader() {
             >
               <Wand2 className="size-4.5 shrink-0" /> Arma tu caja
             </Link>
+            <Button asChild variant="ghost" className="h-12 justify-start px-4" onClick={() => setOpen(false)}>
+              <Link to="/admin"><LayoutDashboard /> Dashboard de ventas</Link>
+            </Button>
           </nav>
 
           <div className="relative isolate mt-auto overflow-hidden border-t border-border px-5 py-6">

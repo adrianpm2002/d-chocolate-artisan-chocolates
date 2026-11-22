@@ -40,3 +40,4 @@ use the editor.
 - Today's stock and its rules live in `src/lib/availability.ts`, separate from catalog data, because production changes daily; only immediate-delivery orders consume it.
 - Orders copy each line's unit price when placed (`src/lib/orders.ts` `placeOrder`), so catalog edits never change existing orders.
 - Cart items and totals use the pure reducer in `src/lib/cart.ts`; the root CartProvider holds session-only state across navigation, without placing orders or reserving stock, so catalog and builder selections share the same cart rules.
+- The `/admin` dashboard uses isolated demo receipts and inventory in `src/lib/sales-dashboard.ts`, never store orders or production; load charts lazily behind ClientOnly and omit the storefront header/footer on admin paths to keep the dashboard shell independent. Real administrative data must require authenticated role-based access before replacing the demo source.
