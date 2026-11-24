@@ -2,9 +2,21 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
+import type { SupabaseServerEnvironment } from "./lib/supabase/server";
 
 type ServerEntry = {
-  fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
+  fetch: (
+    request: Request,
+    requestContext?: unknown,
+  ) => Promise<Response> | Response;
+};
+
+type CloudflareRequest = Request & {
+  runtime?: {
+    cloudflare?: {
+      env?: SupabaseServerEnvironment;
+    };
+  };
 };
 
 let serverEntryPromise: Promise<ServerEntry> | undefined;
@@ -48,10 +60,26 @@ function isH3SwallowedErrorBody(body: string): boolean {
 // CompressionStream) or set content-encoding here or in a server route: the body gets encoded
 // twice and renders garbled.
 export default {
-  async fetch(request: Request, env: unknown, ctx: unknown) {
+  async fetch(
+    request: Request,
+    env: unknown,
+    ctx: unknown,
+  ) {
     try {
+      const cloudflareRequest = request as CloudflareRequest;
+      const cloudflareEnvironment =
+        env as SupabaseServerEnvironment | undefined;
+      cloudflareRequest.runtime ??= {};
+      cloudflareRequest.runtime.cloudflare = {
+        ...cloudflareRequest.runtime.cloudflare,
+        env: {
+          ...cloudflareRequest.runtime.cloudflare?.env,
+          ...cloudflareEnvironment,
+        },
+      };
+
       const handler = await getServerEntry();
-      const response = await handler.fetch(request, env, ctx);
+      const response = await handler.fetch(request);
       return await normalizeCatastrophicSsrResponse(response);
     } catch (error) {
       console.error(error);
